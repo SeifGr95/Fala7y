@@ -1,0 +1,75 @@
+<ng-template #customLoadingTemplate>
+    <div class="custom-class">
+        <h3>
+        </h3>
+       
+    </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+<section class="section" id="blog">
+  <div
+    class="container"
+    style="min-height: calc(100vh - 400px);margin-top: 100px;">
+  <div class="card">
+    <div class="card-body">
+
+        <div class="row" style="padding-top: 10px; padding-bottom: 10px;" *ngFor="let item of cartItems">
+            <div class="col-xs-2 col-md-2">
+                <img class="img-responsive" src="{{BASE_URL}}/product/image/{{item.item.productImage}}" alt="preview" style="width: 80px;height: 80px;">
+            </div>
+            <br/>
+            <div class="col-xs-4 col-md-6">
+                <h4 class="product-name"><strong>{{item.item.productName}}</strong></h4><h4><small>{{item.item.description}}</small></h4>
+                <p>Disponible: {{item.item.quantity}}</p>
+            </div>
+            <div class="col-xs-6 col-md-4 row">
+                <div class="col-xs-6 col-md-6 text-right" style="padding-top: 7px">
+                    <h6><strong>{{item.price}} TND <span class="text-muted">x</span></strong></h6>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <input id="cartQuantity" type="number" class="form-control input-sm" (change)="editQuantityCart(item.item._id, item.price, item.quantity, item.item.quantity)" [(ngModel)]="item.quantity">
+                </div>
+                <div class="col-xs-2 col-md-2">
+                    <button type="button" class="btn btn-outline-danger btn-xs" style="border-radius: 0.25rem;" (click)="removeItemCart(item.item._id)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <br/>
+            <br/>
+        </div>
+        <hr>
+        <hr>
+        <div class="pull-right">
+            <div class="float-right" style="margin: 5px">
+                LIVRAISON: <b>{{cartData.delivery}} TND</b>
+            </div>
+            <br>
+            <div class="float-right" style="margin: 5px">
+                 TOTALE: <b>{{cartData.totalprice | number }} TND</b>
+            </div>
+            <br>
+            <button  class=" uk-text-secondary uk-button button is-primary pull-right" *ngIf="this.thereItem" type="button" uk-toggle="target: #dilevery-example" style="margin-top: 25px; background-color: #11d13a; border-radius: 0.25rem;" >Confirmer</button>
+        </div>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>
+</div>
+</section>
+
+<form [formGroup]="confirmOrdertForm" id="dilevery-example" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body" [ngClass]="{ 'has-error': invalidAddress() }">
+        <h2 class="uk-modal-title">Confirmer votre adresse de livraison </h2>
+        <div class="form-group">
+          <label for="address">Adresse de livraison</label>
+          <input [(ngModel)]="this.address" type="text" formControlName="address" class="form-control" id="address" aria-describedby="emailHelp">
+          <p *ngIf="invalidAddress()" class="help-block text-danger">Adresse de livraison invalide</p>
+        </div>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" style="border-radius: 0.25rem;" type="button">Cancel</button>
+            <button class="uk-button uk-button-primary uk-modal-close " style="border-radius: 0.25rem;background-color: #11d13a; margin: 0 3px;" type="button" (click)="addOrder()">Confirmer</button>
+        </p>
+    </div>
+</form>

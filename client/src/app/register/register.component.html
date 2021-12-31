@@ -1,0 +1,93 @@
+
+<!-- ***** Header Area End ***** -->
+
+<!-- ***** Welcome Area Start ***** -->
+
+  <!-- ***** Blog End ***** -->
+  <ng-template #customLoadingTemplate>
+    <div class="custom-class">
+        <h3>
+        </h3>
+       
+    </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+  <!-- ***** Contact Us Start ***** -->
+  <section class="section colored" id="contact-us">
+    <div class="container" style="min-height: calc(100vh - 400px);margin-top: 35px;">
+      <!-- ***** Section Title Start ***** -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="center-heading">
+            <h2 class="section-title">Rejoindre Fale7y</h2>
+          </div>
+        </div>
+        <div class="offset-lg-3 col-lg-6">
+          <div class="center-text">
+            <p>
+                Créer un compte sur la platforme Fale7y
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- ***** Section Title End ***** -->
+      <div class="container">
+        <!-- ***** Contact Text Start ***** -->
+        <!-- ***** Login Form Start ***** -->
+        <div>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()" >
+                <br/>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidFirstName() }">
+                  <label for="firstName">Nom </label>
+                  <input type="text" formControlName="firstName" class="form-control" id="firstName" aria-describedby="firstNameHelp">
+                  <p *ngIf="invalidFirstName()" class="help-block text-danger">Nom invalide.</p>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidLastName() }">
+                  <label for="lastName">Prenom</label>
+                  <input type="text" formControlName="lastName" class="form-control" id="lastName" aria-describedby="lastNameHelp">
+                  <p *ngIf="invalidLastName()" class="help-block text-danger">Prenom invalide.</p>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidUserName() }">
+                  <label for="userName">Identifiant</label>
+                  <input type="text" formControlName="userName" class="form-control" id="userName" aria-describedby="userNameHelp">
+                  <p *ngIf="invalidUserName()" class="help-block text-danger">Identifiant invalide.</p>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidEmail() }">
+                  <label for="email">Email</label>
+                  <input type="email" formControlName="email" class="form-control" id="email" aria-describedby="emailHelp">
+                  <p *ngIf="invalidEmail()" class="help-block text-danger ">Email invalide.</p>
+                  <p *ngIf="emailExist()" class="help-block text-danger ">Email invalide.</p>
+                </div>
+                <br/>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidPhoneNumber() }">
+                  <label for="phoneNumber">Numéro de téléphone</label>
+                  <input type="number" formControlName="phoneNumber" class="form-control" id="phoneNumber" aria-describedby="phoneNumberHelp">
+                  <p *ngIf="invalidPhoneNumber()" class="help-block text-danger">Numéro de téléphone invalide.</p>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidAddress() }">
+                  <label for="address">Adresse</label>
+                  <input type="text" formControlName="address" class="form-control" id="address" aria-describedby="addressHelp">
+                  <p *ngIf="invalidAddress()" class="help-block text-danger">Adresse invalide.</p>
+                </div>
+                <br/>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidPassword() }">
+                  <label for="psw">Mot de passe </label>
+                  <input type="password" formControlName="psw" class="form-control" id="psw" aria-describedby="emailHelp">
+                  <p *ngIf="invalidPassword()" class="help-block text-danger">Mot de passe est faible</p>
+                  <p *ngIf="!passwordMatch()" class="help-block text-danger">Mot de passe ne correspond pas.</p>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidPassword2() }">
+                  <label for="psw2">Confirmation du mot de passe </label>
+                  <input type="password" formControlName="psw2" class="form-control" id="psw2" aria-describedby="emailHelp">
+                  <p *ngIf="!passwordMatch()" class="help-block text-danger">Mot de passe ne correspond pas</p>
+                </div>
+                <div class="uk-text-right">
+                    <button class="uk-button uk-button-primary" type="submit" style="background-color: #11d13a;border-radius: 0.25rem;" >S'inscrire</button>
+                </div>
+          </form>
+      </div>
+        <!-- ***** Login Form End ***** -->
+      </div>
+    </div>
+  </section>

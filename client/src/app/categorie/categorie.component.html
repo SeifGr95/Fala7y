@@ -1,0 +1,132 @@
+<ng-template #customLoadingTemplate>
+  <div class="custom-class">
+      <h3>
+      </h3>
+     
+  </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+<section class="section" id="blog">
+  <div
+    class="container"
+    style="min-height: calc(100vh - 400px);margin-top: 100px;">
+
+    <!-- ***** Section Title Start ***** -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="center-heading">
+          <h2 class="section-title uk-text-uppercase">{{ title }}</h2>
+        </div>
+      </div>
+      <div class="offset-lg-3 col-lg-6">
+        <div class="center-text"></div>
+      </div>
+    </div>
+    <!-- ***** Section Title End ***** -->
+<div class="row">
+  <form class="uk-search uk-search-large uk-width-1-1" style="border: 1px solid #f3f3f3 !important; border-radius: 3px;">
+    <span uk-search-icon></span>
+    <input class="uk-search-input" id="productSearch" style="font-size: 25px;" (input)= "searchProduct($event)"  type="search" placeholder="Recherche...">
+</form>
+</div>
+<br/>
+<br/>
+<br/>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-12" style="text-align: center;" *ngFor="let prod of products">
+        <div class="card" style=" width: 15rem; height: 25rem; margin-left: auto; margin-right: auto;">
+        <img src="{{BASE_URL}}/product/image/{{prod.productImage}}" class="img-thumbnail" alt="..." style="width: auto; height: 10rem;">
+          <div class="card-body">
+            <h1 class="card-title font-weight-bolder text-left text-uppercase" style="font-size: large;">{{prod.productName}}</h1>
+            <p class="card-text font-weight-normal text-left">{{prod.description}}</p>
+            <h3 *ngIf="this.quantity !== 0" class=" card-title font-weight-light text-left " style="font-size:medium;">Disponible: {{prod.quantity}} {{prod.unit}}</h3>
+            <h3 *ngIf="this.quantity === 0" class=" card-title font-weight-light text-left uk-text-danger " style="font-size:medium;">Stock épuisé</h3>
+              <h3 class=" card-title font-weight-bold text-right text-uppercase" style="color: #11d13a; font-size:medium;">{{prod.price}} TND/{{prod.unit}}</h3>
+
+
+          </div>
+          <button *ngIf="!this.authService.isFarmer" class="uk-button" style="background-color: #11d13a; border-radius: 0.25rem;" type="button" uk-toggle="target: #modal-example" (click)="readyToCart(prod._id, prod.price, prod.quantity)">Ajouter au Panier</button>
+
+          <button *ngIf="this.authService.isFarmer" class="uk-button uk-button-primary uk-width-1-1" style="background-color: #11d13a; border-radius: 0.25rem;" type="button" uk-toggle="target: #editproduct-modal" (click)="readyToEdit(prod._id, prod.productName,prod.description,prod.quantity,prod.price, prod.type,prod.unit, prod.productImage)">Modifier</button>
+
+          <button *ngIf="this.authService.isFarmer" class="uk-button uk-button-danger uk-width-1-1 " type="button" style="border-radius: 0.25rem; margin-top: 3px;"  (click)="deleteProduct(prod._id)">Supprimer</button>
+
+        </div>
+        <br/>
+        <br/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- This is the modal -->
+<form id="editproduct-modal" uk-modal [formGroup]="editProductForm">
+  <div class="uk-modal-dialog uk-modal-body" style="border-radius: 0.25rem;">
+      <h2 class="uk-modal-title">Modifier un produit</h2>
+      <br/>
+      <div class="form-group " [ngClass]="{ 'has-error': invalidImage() }">
+        <label for="productImage">Image de produit </label>
+          <input type="file" id="productImage" class="form-control" (change)="selectImage($event)" accept="image/x-png,image/gif,image/jpeg" />
+        <p *ngIf="invalidImage()" class="help-block text-danger">Image de produit invalid.</p>
+      </div>
+      <div class="form-group" [ngClass]="{ 'has-error': invalidProductName() }">
+        <label for="productName">Nom de produit </label>
+        <input type="text" class="form-control" formControlName="productName" [(ngModel)]="this.productToEdit.productName" id="productName" aria-describedby="productNameHelp">
+        <p *ngIf="invalidProductName()" class="help-block text-danger">Nom de produit invalid.</p>
+      </div>
+      <div class="form-group" [ngClass]="{ 'has-error': invalidDescription() }">
+        <label for="description">Description</label>
+        <input type="text" class="form-control" [(ngModel)]="this.productToEdit.description" formControlName="description" id="description" aria-describedby="descriptionHelp">
+        <p *ngIf="invalidDescription()" class="help-block text-danger">description invalid </p>
+      </div>
+
+      <div class="form-group" [ngClass]="{ 'has-error': invalidQuantityEdit() }" >
+        <label for="Equantity">Quantité</label>
+        <input type="number" min="1" class="form-control" ng formControlName="Equantity" [(ngModel)]="this.productToEdit.quantity" id="Equantity" aria-describedby="quantityHelp">
+        <p *ngIf="invalidQuantityEdit()" class="help-block text-danger">Quantité invalid</p>
+      </div>
+      <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Unité</label>
+      <select [ngModelOptions]="{standalone: true}" [(ngModel)]="this.productToEdit.unit" class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+        <option value="Kg">Kg</option>
+        <option value="Botte">Botte</option>
+        <option value="Piéce">Piéce</option>
+      </select>
+      <p *ngIf="!this.productToEdit.unit" class="help-block text-danger ">Unité invalid</p>
+      <div class="form-group" [ngClass]="{ 'has-error': invalidPrice() }">
+        <label for="Price">Prix</label>
+        <input type="number" min="0" class="form-control" [(ngModel)]="this.productToEdit.price" formControlName="price" id="Price" aria-describedby="emailHelp">
+        <p *ngIf="invalidPrice()" class="help-block text-danger ">Prix invalid.</p>
+      </div>
+      <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Type</label>
+      <select [ngModelOptions]="{standalone: true}" [(ngModel)]="this.productToEdit.type" class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+        <option value="légumes">Légume</option>
+        <option value="fruits">Fruit</option>
+        <option value="home-made">Home-made</option>
+      </select>
+      <p *ngIf="!this.productToEdit.type" class="help-block text-danger ">Type invalid</p>
+
+      <p class="uk-text-right" style="margin-top: 30px">
+        <button style="background-color: #e3e3e3;margin: 0px 3px;" class="uk-button uk-button-default uk-modal-close uk-border-rounded" type="cancel" >Annuler</button>
+        <button style="background-color: #11d13a;" class="uk-button uk-button-primary uk-modal-close uk-border-rounded" type="button" (click)="editProduct()" >Modifier</button>
+    </p>
+  </div>
+</form>
+
+<form [formGroup]="addToCartForm" id="modal-example" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body" style="border-radius: 0.25rem;" [ngClass]="{ 'has-error': invalidQuantity() }">
+        <h2 class="uk-modal-title">Ajouter au Panier</h2>
+        <div class="form-group">
+          <label for="quantity">Quantité</label>
+          <input type="number" min="1" max="{{this.productQuantity}}" [(ngModel)]="this.quantity" formControlName="quantity" class="form-control" id="quantity" aria-describedby="emailHelp">
+          <p *ngIf="invalidQuantity()" class="help-block text-danger">Quantité invalide</p>
+        </div>
+        <div class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button" style="border-radius: 0.25rem;margin: 0px 3px;" (click)="clear()">Cancel</button>
+            <button style="background-color: #11d13a;border-radius: 0.25rem;margin: 0px 3px;" *ngIf="this.authService.isAuth" class="uk-button uk-button-primary uk-modal-close" type="button" (click)="addToCart()">Ajouter</button>
+            <p *ngIf="!this.authService.isAuth" class="help-block text-left font-italic">*Connectez vous à Fale7y pour ajouter au panier</p>
+        </div>
+    </div>
+  </form>
+

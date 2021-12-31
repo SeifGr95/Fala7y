@@ -1,0 +1,50 @@
+
+<!-- ***** Header Area End ***** -->
+
+<!-- ***** Welcome Area Start ***** -->
+
+  <!-- ***** Blog End ***** -->
+  <ng-template #customLoadingTemplate>
+    <div class="custom-class">
+        <h3>
+        </h3>
+    </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+  <section class="section colored" id="contact-us">
+
+    <div class="container" style="min-height: calc(100vh - 400px);margin-top: 35px;">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="center-heading">
+            <h2 class="section-title">S'authentifier</h2>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
+              <p *ngIf="invalidEmailPassword()" class="help-block text-danger">Adresse mail ou mot de passe incorrect.</p>
+              <p *ngIf="emailPassWrong()" class="help-block text-danger">Adresse mail ou mot de passe incorrect.</p>
+                <br/>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidEmailPassword() }">
+                  <label for="email">Email</label>
+                  <input type="email" formControlName="email" class="form-control" id="email" aria-describedby="emailHelp">
+                  
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': invalidEmailPassword() }" >
+                  <label for="psw">Mot de passe </label>
+                  <input type="password" formControlName="psw" class="form-control" id="psw" aria-describedby="emailHelp">
+                  
+                </div>
+                <div class="uk-text-right">
+                    <a style="float: left;" class="inscription-text" [routerLink]="['/register']">Vous n’êtes pas client ? <span class="font-weight-bold">Créez votre compte.</span></a>
+                    <button class="uk-button uk-button-primary" style="background-color: #11d13a;border-radius: 0.25rem;" type="submit" >Se Connecter</button>
+                </div>
+          </form>
+        </div>
+        <!-- ***** Login Form End ***** -->
+      </div>
+    </div>
+  </section>

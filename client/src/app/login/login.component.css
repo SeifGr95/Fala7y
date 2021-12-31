@@ -1,0 +1,8 @@
+.inscription-text{
+    color: #212529;
+    transition: .1s ease-in-out;
+    transition-property: color,background-color;
+}
+.inscription-text:hover{
+    color: #11d13a;
+}

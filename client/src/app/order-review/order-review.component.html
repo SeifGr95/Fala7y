@@ -1,0 +1,127 @@
+<ng-template #customLoadingTemplate>
+    <div class="custom-class">
+        <h3>
+        </h3>
+    </div>
+  </ng-template>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+  <section class="section" id="blog">
+    <div class="container" style="min-height: calc(100vh - 400px);margin-top: 150px;">
+      <div class="row" style="text-align: center;">
+            <table class="uk-table uk-table-hover uk-table-divider" style="margin-left: auto; margin-right: auto;" >
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Numéro de commande</th>
+                        <th>Date de commande</th>
+                        <th>Client</th>
+                        <th>Adresse</th>
+                        <th>Type de paiement</th>
+                        <th>Totale</th>
+                        <th>Actions</th>
+    
+                    </tr>
+                </thead>
+                <tbody *ngFor="let order of orders" >
+                    <tr>
+                        <td>
+                            <span *ngIf="order.isOrderCompleted == 1 && !order.isOrderPaid" uk-icon="icon: check; ratio: 1" style="color: #11d13a;"></span>
+                            <span *ngIf="order.isOrderCompleted == 2" uk-icon="icon: minus; ratio: 1" ></span>
+                            <span *ngIf="order.isOrderCompleted == 0" uk-icon="icon: close; ratio: 1" style="color: #d11a2a;" ></span>
+                            <div *ngIf="order.isOrderCompleted == 1 && order.isOrderPaid">
+                                <span uk-icon="icon: check; ratio: 1" style="color: #11d13a;"></span>
+                                <span uk-icon="icon: check; ratio: 1" style="color: #11d13a;"></span>
+                            </div>
+                        </td>
+                        <td><a uk-toggle="target: #orderdetailModelReview" (click)="getOrderForFarmerById(order._id)" ><u class="active"> #{{order.orderNumber}}</u></a></td>
+                        <td><time>{{order.orderDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm'}}</time></td>
+                        <td>{{order.owner.firstName}} {{order.owner.lastName}}</td>
+                        <td>{{order.address}}</td>
+                        <td>{{order.paymentType}}</td>
+                        <td>{{order.total | number}} TND</td>
+                        <td>
+                            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                <button *ngIf="order.isOrderCompleted == 2" type="button" class="btn btn-success" style="margin: 0 3px" (click)="confirmOrder(order._id)">Confirmer</button>
+                                <button *ngIf="order.isOrderCompleted == 2" type="button" class="btn btn-danger" (click)="cancelOrder(order._id)">Annuler</button>
+                                <button *ngIf="order.isOrderCompleted == 1 && !order.isOrderPaid" type="button" class="btn btn-success" (click)="payOrder(order._id)" style="margin: 0 3px">Payer</button>
+                              </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+      </div>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [className]="this.pagination.hasPreviousPage ? 'page-item' : 'page-item disabled'" >
+            <button class="page-link" (click)= "previousOrderPage()">Précédente</button>
+          </li>
+          <li class="page-item" [className]="this.pagination.hasNextPage? 'page-item' : 'page-item disabled'" >
+            <button class="page-link" (click)= "nextOrderPage()">Suivante</button>
+          </li>
+        </ul>
+      </nav>
+  </section>
+  <!-- This is the modal -->
+  <div id="orderdetailModelReview" uk-modal style="border-radius: 0.25rem;">
+    <div class="shopping-cart dark ">
+      <div class="uk-modal-full">
+         <div class="block-heading">
+            <h2 class="uk-modal-title" style="color: #11d13a;">Commande detaillée</h2>
+         <div class="content">
+              <div id='orderRow' class="row">
+                  <div class="col-md-12 col-lg-12 "  *ngFor="let item of orderItems" >
+                      <div class="items">
+                          <div class="product" >
+                              <div class="row">
+                                  <div class="col-md-3">
+                                      <img class="img-fluid mx-auto d-block image" src="{{BASE_URL}}/product/image/{{item.item.productImage}}" style="height: 150px;">
+                                  </div>
+                                  <div class="col-md-8">
+                                      <div class="info">
+                                          <div class="row">
+                                              <div class="col-md-5 product-name">
+                                                  <div class="product-name" >
+                                                      <h4 class="font-weight-bolde text-center text-uppercase" style="color: #11d13a;" href="">{{item.item.productName}}</h4>
+                                                      <div class="product-info text-center">
+                                                          <div>Description: <span class="value">{{item.item.description}}</span></div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="col-md-4 quantity">
+                                                  <label class="font-weight-normal" style="color: #11d13a;" for="quantity">Quantité:</label>
+                                                  <div><span class="value font-weight-bold">{{item.quantity}}</span></div>
+                                              </div>
+                                              <div class="col-md-3 quantity">
+                                                <label class="font-weight-normal" style="color: #11d13a;" for="price">Prix:</label>
+                                                <div><span class="value font-weight-bold">{{item.quantity* item.price | number}} TND</span></div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-12 col-lg-12">
+                    <div class="container">
+                        <ul class="uk-list uk-list-divider" style="margin-right: 30px;">
+                            <li class="font-weight-normal"><p class="font-weight-bold " style="color: #1f1f1f;">Client: </p>{{orderDetails.owner.firstName}} {{orderDetails.owner.lastName}}  </li>
+                            <li class="font-weight-normal"><p class="font-weight-bold " style="color: #1f1f1f;">Totale: </p>{{orderDetails.total}} TND</li>
+                            <li class="font-weight-normal"><p class="font-weight-bold " style="color: #1f1f1f;">Date de la commande: </p>{{orderDetails.orderDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm'}}</li>
+                            <li class="font-weight-normal"><p class="font-weight-bold " style="color: #1f1f1f;">Type de paiement: </p>{{orderDetails.paymentType}} </li>
+                            <li class="font-weight-normal"><p class="font-weight-bold " style="color: #1f1f1f;">Adresse: </p>{{orderDetails.address}} </li>
+                        </ul>
+                        <br/>
+                        <div style="margin-bottom: 20px;">
+                            <button *ngIf="isOrderConfirmed() == 2" class=" uk-label-success uk-button uk-button-default uk-modal-close" style="background-color: #11d13a;border-radius: 0.25rem; margin: 0 3px;" (click)="confirmOrder(orderDetails.id)">Confirmer Order</button>
+                            <button  class="uk-button uk-modal-close uk-button-secondary" style="border-radius: 0.25rem; margin: 2px;" type="button">Quitter</button>
+                            <button class="uk-button uk-modal-close uk-button-primary" style="border-radius: 0.25rem; margin: 2px;" type="button" (click)="goPrinter(orderDetails.id)" >Imprimer</button>
+                        </div>
+                    </div>
+                  </div>
+                <br/>
+          </div>
+      </div>
+  </div>
+  </div>

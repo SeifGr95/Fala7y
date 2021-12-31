@@ -1,0 +1,127 @@
+<ng-template #customLoadingTemplate>
+  <div class="custom-class">
+      <h3>
+      </h3>
+
+  </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+  <section id="mainnav">
+    <header class="header-area header-sticky">
+
+  <div class="container-fluid">
+    
+      <div class="row justify-content-center">
+    <nav class="uk-container " uk-navbar>
+     
+      <button type="button" class="navbar-toggle uk-hidden@m" uk-toggle="target:.toggle-target; cls:collapsed">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+      </button>
+
+        <a class="navbar-brand" id="navitemlogo" href=""> <img id="logo" alt="Logo" src="../../assets/images/fale7y-logo.png" width="65" height="65">
+          <span class="spanmargin text-uppercase" style="font-weight: 700;">Fale7y</span> </a>
+
+      <div class="uk-navbar-right toggle-target collapsed">
+        <div class="row justify-content-center">
+          <ul class="uk-navbar-nav">
+            <li><a [routerLink]="['/']" class="active">Acceuil</a></li>
+            <li ><a [routerLink]="['/info']" class="nav-item" >Info</a></li>
+            <li><a href="https://drive.google.com/file/d/18bzYUgaweGTEOAorXlrMc1u77m2G3-lM/view?fbclid=IwAR15oTACTiIAZgEBEGJJautpTogU2IZqT_R2BDhnYs1qXUXk8ipFUA4GZRU">Mobile</a></li>
+            <li>
+                <a class="nav-item" [routerLink]="['/category']">Marché</a>
+                  <div class="uk-navbar-dropdown">
+                      <ul class="uk-nav uk-navbar-dropdown-nav">
+                          <li><a [routerLink]="['/category/légumes']" routerLinkActive="active"> Légumes</a></li>
+                          <li><a [routerLink]="['/category/fruits']" routerLinkActive="active"> Fruits</a></li>
+                          <li><a [routerLink]="['/category/home-made']" routerLinkActive="active"> Home-made</a></li>
+                      </ul>
+                  </div>
+              </li>
+              <li><a class="nav-item" [routerLink]="['/contact']">Contact</a></li>
+              <li *ngIf="!authService.isAuth"><a class="nav-item" [routerLink]="['/login']">Connexion</a></li>
+              
+              <li *ngIf="authService.isAuth && !authService.isFarmer">
+                <a class="nav-item" href="">Mon espace</a>
+                  <div class="uk-navbar-dropdown">
+                      <ul class="uk-nav uk-navbar-dropdown-nav">
+                          <li><a class="nav-item "  [routerLink]="['/client/orders']">Mes Commandes</a></li>
+                          <li  *ngIf="authService.isAuth" (click)= "logout()"><a class="nav-item" [routerLink]="['/']">Déconnexion</a></li>
+                      </ul>
+                    </div>
+              </li>
+                    <li *ngIf="authService.isAuth && authService.isFarmer">
+                      <a  class="nav-item" href="">Espace agriculteur</a>
+                        <div class="uk-navbar-dropdown">
+                            <ul class="uk-nav uk-navbar-dropdown-nav">
+                                <li><a class="nav-item "  uk-toggle="target: #addproduct-modal" href="">Ajouter des produits</a></li>
+                                <li><a class="nav-item "  [routerLink]="['/farmer/orders']">Consulter les commandes</a></li>
+                                <li  *ngIf="authService.isAuth" (click)= "logout()"><a class="nav-item" [routerLink]="['/']">Déconnexion</a></li>
+                             </ul>
+                        </div>
+                    </li>
+                <li *ngIf="authService.isAuth && !authService.isFarmer"><a class="nav-item"  [routerLink]="['/cart']"> <span class="cart-badge">{{this.cartService.getItemCount()}}</span> <span class="material-icons">add_shopping_cart</span> Panier</a></li>
+           </ul>
+      </div>
+      </div>
+  </nav>
+  </div>
+  </div>
+  </header>
+</section>
+    <div>
+      <form id="addproduct-modal" uk-modal [formGroup]="addProductForm">
+      <div class="uk-modal-dialog uk-modal-body">
+          <h2 class="uk-modal-title">Ajouter un produit</h2>
+          <br/>
+          <div class="form-group " [ngClass]="{ 'has-error': invalidImage() }">
+            <label for="productImage">Image de produit </label>
+              <input type="file" id="productImage" class="form-control" (change)="selectImage($event)" accept="image/x-png,image/gif,image/jpeg" />
+            <p *ngIf="invalidImage()" class="help-block text-danger">Image de produit invalid.</p>
+          </div>
+          <div class="form-group" [ngClass]="{ 'has-error': invalidProductName() }">
+            <label for="productName">Nom de produit </label>
+            <input type="text" class="form-control" formControlName="productName" id="productName" aria-describedby="productNameHelp">
+            <p *ngIf="invalidProductName()" class="help-block text-danger">Nom de produit invalid.</p>
+          </div>
+          <div class="form-group" [ngClass]="{ 'has-error': invalidDescription() }">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" formControlName="description" id="description" aria-describedby="descriptionHelp">
+            <p *ngIf="invalidDescription()" class="help-block text-danger">description invalid </p>
+          </div>
+
+          <div class="form-group" [ngClass]="{ 'has-error': invalidQuantity() }" >
+            <label for="quantity">Quantité</label>
+            <input type="number" min="1" class="form-control" ng formControlName="quantity" value="1" id="quantity" aria-describedby="quantityHelp">
+            <p *ngIf="invalidQuantity()" class="help-block text-danger">Quantité invalid</p>
+          </div>
+          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Unité</label>
+          <select [ngModelOptions]="{standalone: true}" [(ngModel)]="this.unit" class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+            <option value="Kg">Kg</option>
+            <option value="Botte">Botte</option>
+            <option value="Piéce">Piéce</option>
+          </select>
+          <p *ngIf="!this.unit" class="help-block text-danger ">Unité invalid</p>
+          <div class="form-group" [ngClass]="{ 'has-error': invalidPrice() }">
+            <label for="Price">Prix</label>
+            <input type="number" min="0" class="form-control" value="0" formControlName="price" id="Price" aria-describedby="emailHelp">
+            <p *ngIf="invalidPrice()" class="help-block text-danger ">Prix invalid.</p>
+          </div>
+          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Type</label>
+          <select [ngModelOptions]="{standalone: true}" [(ngModel)]="this.type" class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+            <option value="légumes">Légume</option>
+            <option value="fruits">Fruit</option>
+            <option value="home-made">Home-made</option>
+          </select>
+          <p *ngIf="!this.type" class="help-block text-danger ">Type invalid</p>
+
+          <p class="uk-text-right" style="margin-top: 30px">
+            <button class="uk-button uk-button-default uk-modal-close uk-border-rounded" style="margin: 0 3px;" type="cancel" >Annuler</button>
+            <button class="uk-button uk-button-primary uk-modal-close uk-border-rounded" style="background-color: #11d13a;" type="button" (click)="addProduct()" >Ajouter</button>
+        </p>
+      </div>
+    </form>
+</div>

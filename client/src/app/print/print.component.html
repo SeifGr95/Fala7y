@@ -1,0 +1,123 @@
+<ng-template #customLoadingTemplate>
+    <div class="custom-class">
+        <h3>
+        </h3>
+    </div>
+  </ng-template>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+<section class="section colored" id="print">
+<div id="printOrderModal" style="border-radius: 0.25rem; margin-left: auto; margin-right: auto;">
+    <div class="container">
+        <div class="row">
+                           <!-- BEGIN INVOICE -->
+                            <div class="col-lg-12">
+                                <div class="grid invoice">
+                                    <div class="grid-body">
+                                        <div class="invoice-title">
+                                            <div class="row justify-content-between">
+                                                <div class="col-sm-6">
+                                                    <img src="../../assets/images/fale7y-logo.png" alt="" height="65" width="65">
+                                                </div>
+                                                <div class="col-sm-6 text-right">
+                                                    <address>
+                                                        <span>R. de Jérusalem.</span><br>
+                                                        <span>2098 RADÈS MEDINA BEN AROUS</span><br>
+                                                        <span>Tunisia</span>
+                                                    </address>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <h2>Reçu<br>
+                                                    <span class="small">Commande #{{orderDetails.orderNumber}}</span></h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row justify-content-between">
+                                            <div class="col-sm-6">
+                                                <address>
+                                                    <strong>Client:</strong><br>
+                                                    {{orderDetails.owner.firstName}} {{orderDetails.owner.lastName}}<br>
+                                                    <abbr title="Télephone">T: {{orderDetails.owner.phoneNumber}}</abbr>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 text-right">
+                                                <address>
+                                                    <strong>Adresse:</strong><br>
+                                                    {{orderDetails.address}}<br>
+                                                </address>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between">
+                                            <div class="col-sm-6">
+                                                <address>
+                                                    <strong>Type de Paiement:</strong><br>
+                                                    {{orderDetails.paymentType}}<br>
+                                                </address>
+                                            </div>
+                                            <div class="col-sm-6 text-right">
+                                                <address>
+                                                    <strong>Date de la commande:</strong><br>
+                                                    {{orderDetails.orderDate | amLocal | amDateFormat: 'YYYY-MM-DD HH:mm'}}
+                                                </address>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <hr>
+                                        <div class="row mt-3">
+                                            <div class="col-lg-12">
+                                                <h1>COMMANDE DETAILLÉE</h1>
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr class="line">
+                                                            <td><strong>#</strong></td>
+                                                            <td class="text-left"><strong>ARTICLE</strong></td>
+                                                            <td class="text-center"><strong>QUANTITÉ</strong></td>
+                                                            <td class="text-center"><strong>PRIX UNITAIRE</strong></td>
+                                                            <td class="text-right"><strong>PRIX TOTALE</strong></td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody *ngFor="let item of orderItems; index as i">
+                                                        <tr>
+                                                            <td>{{i+1}}</td>
+                                                            <td class="text-left"><strong>{{item.item.productName}}</strong><br>{{item.item.description}} </td>
+                                                            <td class="text-center">{{item.quantity}}x</td>
+                                                            <td class="text-center">{{item.price | number}} TND</td>
+                                                            <td class="text-right">{{item.quantity* item.price | number}} TND</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tr>
+                                                        <td colspan="3"></td>
+                                                        <td class="text-right"><strong>Sous-Totale</strong></td>
+                                                        <td class="text-right"><strong>{{orderDetails.total - orderDetails.delivery | number}} TND</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3"></td>
+                                                        <td class="text-right"><strong>Livraison</strong></td>
+                                                        <td class="text-right"><strong>5 TND</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3"></td>
+                                                        <td class="text-right"><strong>Totale</strong></td>
+                                                        <td class="text-right"><strong>{{orderDetails.total | number}}TND</strong></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+</div>
+<div class="col-md-12 col-lg-12 text-center" id="impB">
+    <div class="container">
+        <div style="margin-bottom: 20px;">
+            <button class="uk-button uk-modal-close uk-button-primary" style="background-color: #11d13a;border-radius: 0.25rem; margin: 0 3px;" type="button" (click)="print()" >Imprimer</button>
+        </div>
+    </div>
+  </div>
+</section>
